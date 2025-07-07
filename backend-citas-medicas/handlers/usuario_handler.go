@@ -25,28 +25,25 @@ func Registro(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(usuario)
 }
 
-/*func Login(w http.ResponseWriter, r *http.Request) {
-	var cred struct {
-		Correo     string `json:"correo"`
-		Contrasena string `json:"contrasena"`
-	}
-	json.NewDecoder(r.Body).Decode(&cred)
-
-	var usuario models.Usuario
-	if err := config.DB.Where("correo = ? AND contrasena = ?", cred.Correo, cred.Contrasena).First(&usuario).Error; err != nil {
-		http.Error(w, "Credenciales inválidas", http.StatusUnauthorized)
+// handlers/usuario_handler.go
+func ListarMedicos(w http.ResponseWriter, r *http.Request) {
+	var medicos []models.Usuario
+	if err := config.DB.Where("rol = ?", "medico").Find(&medicos).Error; err != nil {
+		http.Error(w, "Error al obtener médicos", http.StatusInternalServerError)
 		return
 	}
-
-	token, err := middleware.GenerarJWT(usuario.ID, usuario.Rol)
-	if err != nil {
-		http.Error(w, "Error al generar token", http.StatusInternalServerError)
-		return
+	for i := range medicos {
+		medicos[i].Contrasena = ""
 	}
-
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"token": token,
-		"user":  usuario,
-	})
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(medicos)
 }
-*/
+
+func ListarMedicosConEspecialidades(w http.ResponseWriter, r *http.Request) {
+	var medicos []models.Usuario
+	if err := config.DB.Preload("Especialidades").Where("rol = ?", "medico").Find(&medicos).Error; err != nil {
+		http.Error(w, "Error al obtener médicos", http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(medicos)
+}

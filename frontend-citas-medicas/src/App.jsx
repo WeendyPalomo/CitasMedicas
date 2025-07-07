@@ -13,6 +13,7 @@ import ManageAvailabilityPage from './pages/doctor/ManageAvailabilityPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { AuthProvider } from './context/AuthContext'; // Importa el proveedor de autenticación
 import DoctorAppointmentsPage from './pages/doctor/DoctorAppointmentsPage';
+import MyAppointmentsPage from './pages/patient/MyAppointmentsPage';
 
 function App() {
   return (
@@ -31,7 +32,7 @@ function App() {
               <Route path="/manage-availability" element={<ManageAvailabilityPage />} />
               <Route path="*" element={<NotFoundPage />} /> {/* Ruta para 404 */}
               <Route path="/doctor-appointments" element={<DoctorAppointmentsPage />} />
-              
+              <Route path="/my-appointments" element={<MyAppointmentsPage />} />
             </Routes>
           </main>
           <Footer />

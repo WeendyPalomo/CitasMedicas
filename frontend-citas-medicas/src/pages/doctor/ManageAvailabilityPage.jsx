@@ -27,6 +27,11 @@ const ManageAvailabilityPage = () => {
  const handleSubmit = async (e) => {
   e.preventDefault();
 
+  if (!dia || !inicio || !fin) {
+    setMensaje("Por favor completa día, hora de inicio y hora de fin.");
+    return;
+  }
+
   // Validar que hora_fin sea mayor que hora_inicio
   const [inicioHora, inicioMinuto] = inicio.split(':').map(Number);
   const [finHora, finMinuto] = fin.split(':').map(Number);

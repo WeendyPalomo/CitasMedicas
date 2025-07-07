@@ -10,4 +10,6 @@ type Usuario struct {
 	Contrasena    string    `json:"contrasena"`
 	Rol           string    `gorm:"type:varchar(20)" json:"rol"`
 	FechaRegistro time.Time `gorm:"autoCreateTime" json:"fecha_registro"`
+
+	Especialidades []Especialidad `gorm:"many2many:medicos_especialidades;" json:"especialidades,omitempty"`
 }

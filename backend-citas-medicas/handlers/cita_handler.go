@@ -10,6 +10,7 @@ import (
 	"backend-citas-medicas/models"
 
 	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
 func CrearCita(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +19,19 @@ func CrearCita(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Datos inválidos", http.StatusBadRequest)
 		return
 	}
+
+	// Validar cita duplicada
+	var existente models.Cita
+	err := config.DB.Where("medico_id = ? AND fecha = ? AND hora = ?", cita.MedicoID, cita.Fecha, cita.Hora).First(&existente).Error
+	if err == nil {
+		http.Error(w, "Ya existe una cita para ese médico en esa fecha y hora", http.StatusBadRequest)
+		return
+	}
+	if err != gorm.ErrRecordNotFound {
+		http.Error(w, "Error al validar cita", http.StatusInternalServerError)
+		return
+	}
+
 	if err := config.DB.Create(&cita).Error; err != nil {
 		http.Error(w, "Error al crear la cita", http.StatusInternalServerError)
 		return
