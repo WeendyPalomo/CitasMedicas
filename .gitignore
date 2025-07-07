@@ -1,0 +1,14 @@
+# Node.js
+node_modules/
+.env
+
+# Python/Django (si aplica)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+.env
+
+# Logs
+*.log
