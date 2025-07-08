@@ -13,12 +13,6 @@ const HomePage = () => {
       </p>
       <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
         <Link
-          to="/book-appointment"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105"
-        >
-          Agendar una Cita
-        </Link>
-        <Link
           to="/register"
           className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105"
         >
@@ -26,7 +20,7 @@ const HomePage = () => {
         </Link>
       </div>
 
-      <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Para Pacientes</h2>
           <p className="text-gray-600 mb-6">
@@ -55,13 +49,6 @@ const HomePage = () => {
           </Link>
         </div>
 
-        <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Integración Sencilla</h2>
-          <p className="text-gray-600 mb-6">
-            Un backend robusto en Go con PostgreSQL asegura una gestión de datos confiable.
-          </p>
-          <span className="text-gray-500 text-sm">Próximamente: Más funcionalidades</span>
-        </div>
       </div>
     </div>
   );
