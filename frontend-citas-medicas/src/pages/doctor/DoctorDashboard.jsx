@@ -41,6 +41,22 @@ const DoctorDashboard = () => {
           </Link>
         </div>
 
+            <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-md">
+              <h2 className="text-3xl font-bold mb-4">Bienvenido Dr. {user?.nombre}</h2>
+              <p className="text-gray-700 text-lg mb-4">Correo: {user?.correo}</p>
+
+              {user?.especialidades && user.especialidades.length > 0 && (
+                <div className="mt-4">
+                  <h3 className="text-xl font-semibold mb-2">Especialidades:</h3>
+                  <ul className="list-disc list-inside text-gray-700">
+                    {user.especialidades.map((esp) => (
+                      <li key={esp.id}>{esp.nombre}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
         <div className="bg-orange-50 p-6 rounded-lg shadow-md border border-orange-200">
           <h2 className="text-2xl font-bold text-orange-800 mb-3">Ver Mis Citas</h2>
           <p className="text-gray-700 mb-4">
@@ -65,6 +81,9 @@ const DoctorDashboard = () => {
         </div>
       </div>
     </div>
+
+    
+
   );
 };
 

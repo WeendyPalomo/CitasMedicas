@@ -3,7 +3,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"backend-citas-medicas/config"
@@ -19,7 +18,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&credenciales)
 
 	var usuario models.Usuario
-	if err := config.DB.Where("correo = ? AND contrasena = ?", credenciales.Correo, credenciales.Contrasena).First(&usuario).Error; err != nil {
+	if err := config.DB.Preload("Especialidades").Where("correo = ? AND contrasena = ?", credenciales.Correo, credenciales.Contrasena).First(&usuario).Error; err != nil {
 		http.Error(w, "Credenciales inválidas", http.StatusUnauthorized)
 		return
 	}
@@ -30,17 +29,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Respuesta de la API:", map[string]interface{}{
-		"token": token,
-		"user":  usuario,
-	})
-
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"token": token,
 		"user":  usuario,
 	})
-
-	fmt.Println("Correo recibido:", credenciales.Correo)
-	fmt.Println("Contraseña recibida:", credenciales.Contrasena)
-
 }

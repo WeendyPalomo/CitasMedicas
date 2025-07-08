@@ -10,15 +10,36 @@ import (
 )
 
 func Registro(w http.ResponseWriter, r *http.Request) {
-	var usuario models.Usuario
-	if err := json.NewDecoder(r.Body).Decode(&usuario); err != nil {
+	var datos struct {
+		Nombre         string `json:"nombre"`
+		Correo         string `json:"correo"`
+		Contrasena     string `json:"contrasena"`
+		Rol            string `json:"rol"`
+		Especialidades []uint `json:"especialidades"` // solo si es médico
+	}
+	if err := json.NewDecoder(r.Body).Decode(&datos); err != nil {
 		http.Error(w, "Datos inválidos", http.StatusBadRequest)
 		return
+	}
+
+	usuario := models.Usuario{
+		Nombre:     datos.Nombre,
+		Correo:     datos.Correo,
+		Contrasena: datos.Contrasena,
+		Rol:        datos.Rol,
 	}
 
 	if err := config.DB.Create(&usuario).Error; err != nil {
 		http.Error(w, "Error al registrar usuario", http.StatusInternalServerError)
 		return
+	}
+
+	// Asociar especialidades si es médico
+	if datos.Rol == "medico" && len(datos.Especialidades) > 0 {
+		var especialidades []models.Especialidad
+		if err := config.DB.Where("id IN ?", datos.Especialidades).Find(&especialidades).Error; err == nil {
+			config.DB.Model(&usuario).Association("Especialidades").Append(especialidades)
+		}
 	}
 
 	w.WriteHeader(http.StatusCreated)

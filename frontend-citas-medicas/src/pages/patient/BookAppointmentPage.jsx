@@ -5,6 +5,16 @@ import { useAuth } from '../../hooks/useAuth';
 
 const BookAppointmentPage = () => {
   const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <div className="p-6 max-w-md mx-auto">
+        <h1 className="text-xl font-bold mb-4 text-center">Acceso no autorizado</h1>
+        <p className="text-center">Por favor, inicia sesión para agendar una cita.</p>
+      </div>
+    );
+  }
+
   const token = user.token;
 
   const [medicos, setMedicos] = useState([]);
@@ -36,7 +46,6 @@ const BookAppointmentPage = () => {
     if (!medicoId || !fecha || !hora) {
       setError('Selecciona médico, fecha y hora antes de agendar.');
       setTimeout(() => setError(''), 4000);
-
       return;
     }
 
@@ -58,12 +67,10 @@ const BookAppointmentPage = () => {
       setFecha('');
       setHora('');
     } catch (err) {
-      // Captura mensaje desde respuesta del backend si existe
       const msg =
         err.response?.data?.error || err.message || 'Error al agendar cita';
       setError(msg);
       setTimeout(() => setError(''), 4000);
-
     }
   };
 
@@ -91,7 +98,6 @@ const BookAppointmentPage = () => {
               {m.nombre}
             </option>
           ))}
-
         </select>
 
         <input

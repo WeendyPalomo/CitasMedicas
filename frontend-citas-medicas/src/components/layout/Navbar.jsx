@@ -22,6 +22,9 @@ const Navbar = () => {
               {user.role === 'medico' && (
                 <Link to="/doctor-dashboard" className="text-white hover:text-blue-200 transition duration-300">Mi Panel</Link>
               )}
+              {user.role === 'admin' && (
+                <Link to="/admin-dashboard" className="text-white hover:text-blue-200 transition duration-300">Administracion</Link>
+              )}
               <button
                 onClick={logout}
                 className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300"

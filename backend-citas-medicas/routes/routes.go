@@ -30,6 +30,9 @@ func SetupRoutes() *mux.Router {
 
 	r.HandleFunc("/medicos", handlers.ListarMedicosConEspecialidades).Methods("GET")
 
+	r.HandleFunc("/medicos/{id}/especialidades", handlers.AsignarEspecialidad).Methods("POST")
+	r.HandleFunc("/medicos/{id}/especialidades/{especialidadId}", handlers.QuitarEspecialidad).Methods("DELETE")
+
 	// Rutas públicas
 	api.HandleFunc("/login", handlers.Login).Methods("POST")
 	api.HandleFunc("/registro", handlers.Registro).Methods("POST")

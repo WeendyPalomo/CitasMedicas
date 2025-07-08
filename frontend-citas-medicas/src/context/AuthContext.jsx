@@ -37,15 +37,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (nombre, correo, contrasena, rol) => {
-    try {
-      await api.post('/registro', { nombre, correo, contrasena, rol });
-      return true;
-    } catch (error) {
-      console.error('Error en registro:', error.message);
-      return false;
-    }
-  };
+const register = async (nombre, correo, contrasena, rol, especialidades = []) => {
+  try {
+    await api.post('/registro', {
+      nombre,
+      correo,
+      contrasena,
+      rol,
+      especialidades, // array de IDs
+    });
+    return true;
+  } catch (error) {
+    console.error('Error en registro:', error.message);
+    return false;
+  }
+};
+
 
   const logout = () => {
     setUser(null);

@@ -28,9 +28,9 @@ const LoginForm = () => {
     const success = await login(formData.email, formData.password);
     if (success) {
       alert('Inicio de sesión exitoso');
-      if (success.user.rol === 'medico') {
+      if (success.user.role === 'medico') {
         navigate('/doctor-dashboard');
-      } else if (success.user.rol === 'paciente') {
+      } else if (success.user.role === 'paciente') {
         navigate('/patient-dashboard');
       } else {
         navigate('/');

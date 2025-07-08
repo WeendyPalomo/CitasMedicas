@@ -15,9 +15,9 @@ const LoginPage = () => {
   // useEffect para redirigir después del login
   useEffect(() => {
     if (user) {
-      if (user.rol === 'medico') {
+      if (user.role === 'medico') {
         navigate('/doctor-dashboard');
-      } else if (user.rol === 'admin') {
+      } else if (user.role === 'admin') {
         navigate('/admin-dashboard');
       } else {
         navigate('/patient-dashboard');

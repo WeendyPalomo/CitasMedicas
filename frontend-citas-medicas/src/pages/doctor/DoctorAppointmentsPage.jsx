@@ -30,6 +30,7 @@ const DoctorAppointmentsPage = () => {
               <p><strong>Paciente:</strong> {cita.nombre_paciente}</p>
               <p><strong>Fecha:</strong> {cita.fecha}</p>
               <p><strong>Hora:</strong> {cita.hora}</p>
+              <p><strong>Especialidad(es):</strong> {cita.especialidades?.join(', ')}</p>
             </li>
           ))}
         </ul>

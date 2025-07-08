@@ -1,3 +1,4 @@
+// file: models/medicoespecialidad.go
 package models
 
 type MedicoEspecialidad struct {

@@ -14,6 +14,9 @@ import NotFoundPage from './pages/NotFoundPage';
 import { AuthProvider } from './context/AuthContext'; // Importa el proveedor de autenticación
 import DoctorAppointmentsPage from './pages/doctor/DoctorAppointmentsPage';
 import MyAppointmentsPage from './pages/patient/MyAppointmentsPage';
+import AdminAssignEspecialidadesPage from './pages/admin/AdminAssignEspecialidadesPage';
+import AdminEspecialidadesPage from './pages/admin/AdminEspecialidadesPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 function App() {
   return (
@@ -33,6 +36,10 @@ function App() {
               <Route path="*" element={<NotFoundPage />} /> {/* Ruta para 404 */}
               <Route path="/doctor-appointments" element={<DoctorAppointmentsPage />} />
               <Route path="/my-appointments" element={<MyAppointmentsPage />} />
+              <Route path="/admin/asignar-especialidades" element={<AdminAssignEspecialidadesPage />} />
+              <Route path="/admin/especialidades" element={<AdminEspecialidadesPage />} />
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
             </Routes>
           </main>
           <Footer />

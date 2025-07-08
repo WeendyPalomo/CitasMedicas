@@ -31,4 +31,5 @@ export const doctorService = {
     // Para eliminar la relación, asumimos método DELETE con query params o similar
     return api.delete(`/medicos/${medicoId}/especialidades/${especialidadId}`, token);
   },
+
 };

@@ -72,30 +72,51 @@ func ObtenerCitasPorMedico(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Traer citas con nombre del paciente
 	rows, err := config.DB.Raw(`
-		SELECT c.id, u.nombre, c.fecha, c.hora
+		SELECT c.id, u.nombre AS paciente_nombre, c.fecha, c.hora
 		FROM cita c
 		JOIN usuario u ON c.paciente_id = u.id
-		WHERE c.medico_id = $1
-		ORDER BY c.fecha, c.hora`, medicoID).Rows()
+		WHERE c.medico_id = ?
+		ORDER BY c.fecha, c.hora
+	`, medicoID).Rows()
 	if err != nil {
 		http.Error(w, "Error al obtener citas", http.StatusInternalServerError)
 		return
 	}
+	defer rows.Close()
 
 	var citas []map[string]interface{}
 	for rows.Next() {
-		var cita map[string]interface{}
-		var nombrePaciente string
-		var fecha string
-		var hora string
 		var id int
-		rows.Scan(&id, &nombrePaciente, &fecha, &hora)
-		cita = map[string]interface{}{
+		var pacienteNombre, fecha, hora string
+		if err := rows.Scan(&id, &pacienteNombre, &fecha, &hora); err != nil {
+			continue
+		}
+
+		// Obtener especialidades del médico para cada cita
+		var especialidades []string
+		especialidadRows, err := config.DB.Raw(`
+			SELECT e.nombre
+			FROM medicos_especialidades me
+			JOIN especialidad e ON me.especialidad_id = e.id
+			WHERE me.medico_id = ?
+		`, medicoID).Rows()
+		if err == nil {
+			for especialidadRows.Next() {
+				var nombre string
+				especialidadRows.Scan(&nombre)
+				especialidades = append(especialidades, nombre)
+			}
+			especialidadRows.Close()
+		}
+
+		cita := map[string]interface{}{
 			"id":              id,
-			"paciente_nombre": nombrePaciente,
+			"nombre_paciente": pacienteNombre,
 			"fecha":           fecha,
 			"hora":            hora,
+			"especialidades":  especialidades,
 		}
 		citas = append(citas, cita)
 	}
