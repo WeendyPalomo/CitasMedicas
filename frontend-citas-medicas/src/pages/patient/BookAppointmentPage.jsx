@@ -101,12 +101,14 @@ if (medicoId && token) {
   setDisponibilidad(data);
    if (data.length === 0) {
           setError('Este médico no tiene disponibilidad en este momento. Inténtalo más tarde.');
+          setTimeout(() => setError(''), 3000);
         }
   })
   .catch(err => {
   console.error('❌ Error al cargar disponibilidad', err);
   setDisponibilidad([]);
   setError('No se pudo cargar la disponibilidad del médico.');
+  setTimeout(() => setError(''), 3000);
 });
 } else {
   setDisponibilidad([]);
@@ -160,7 +162,7 @@ if (medicoId && token) {
 
     if (!medicoId || !fecha || !hora) {
       setError('Completa todos los campos antes de agendar.');
-      setTimeout(() => setError(''), 4000);
+      setTimeout(() => setError(''), 3000);
       return;
     }
 
@@ -169,12 +171,15 @@ if (medicoId && token) {
         {
           paciente_id: user.id,
           medico_id: parseInt(medicoId),
+          especialidad_id: parseInt(especialidadId),
           fecha,
           hora,
         },
         token
       );
       setMensaje('Cita agendada correctamente');
+      setTimeout(() => setMensaje(''), 3000);
+
       setMedicoId('');
       setEspecialidadId('');
       setFecha('');
@@ -184,6 +189,7 @@ if (medicoId && token) {
     } catch (err) {
       const msg = err.response?.data?.error || err.message;
       setError(msg);
+      setTimeout(() => setError(''), 3000);
     }
   };
 
@@ -236,24 +242,6 @@ if (medicoId && token) {
           className="border p-2 w-full"
           required
         />
-
-      {error && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
-            <h3 className="font-bold text-lg mb-4">Aviso</h3>
-            <p className="mb-4">{error}</p>
-            <div className="flex justify-end">
-              <button
-                onClick={() => setError('')}
-                className="px-4 py-2 bg-blue-600 text-white rounded"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
 
         <select
           value={hora}

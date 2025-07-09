@@ -44,11 +44,10 @@ func CitasPaciente(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(idStr)
 
 	rows, err := config.DB.Raw(`
-		  SELECT c.id, c.fecha, c.hora, c.estado, u.nombre AS medico, e.nombre AS especialidad
-          FROM cita c
-          JOIN usuarios u ON u.id = c.medico_id
-          LEFT JOIN medico_especialidads me ON me.medico_id = c.medico_id
-          LEFT JOIN especialidads e ON me.especialidad_id = e.id
+		SELECT c.id, c.fecha, c.hora, c.estado, u.nombre AS medico, e.nombre AS especialidad
+		FROM cita c
+		JOIN usuarios u ON u.id = c.medico_id
+		LEFT JOIN especialidads e ON e.id = c.especialidad_id
 		WHERE c.paciente_id = ?
 		ORDER BY c.fecha, c.hora
 	`, id).Rows()
