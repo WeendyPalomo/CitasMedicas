@@ -28,10 +28,19 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/especialidades", handlers.ListarEspecialidades).Methods("GET")
 	r.HandleFunc("/especialidades", handlers.CrearEspecialidad).Methods("POST")
 
-	r.HandleFunc("/medicos", handlers.ListarMedicosConEspecialidades).Methods("GET")
-
 	r.HandleFunc("/medicos/{id}/especialidades", handlers.AsignarEspecialidad).Methods("POST")
-	r.HandleFunc("/medicos/{id}/especialidades/{especialidadId}", handlers.QuitarEspecialidad).Methods("DELETE")
+
+	r.HandleFunc("/api/v1/especialidades/{id}/medicos", handlers.ObtenerMedicosPorEspecialidad).Methods("GET")
+	r.Handle("/api/v1/especialidades/{id}", middleware.JWTMiddleware(http.HandlerFunc(handlers.EliminarEspecialidad))).Methods("DELETE")
+	r.HandleFunc("/api/v1/especialidades/{id}", handlers.EliminarEspecialidad).Methods("DELETE")
+
+	r.HandleFunc("/api/v1/medicos", handlers.ListarMedicosConEspecialidades).Methods("GET")
+
+	r.HandleFunc("/api/v1/medicos-con-especialidades", handlers.ListarMedicosConEspecialidades).Methods("GET")
+
+	// Ruta para asignar especialidad a un médico
+	r.HandleFunc("/api/v1/medicos/{id}/especialidades", handlers.AsignarEspecialidad).Methods("POST")
+	r.HandleFunc("/api/v1/medicos/{id}/especialidades/{id}", handlers.EliminarMedicoEspecialidad).Methods("DELETE")
 
 	// Rutas públicas
 	api.HandleFunc("/login", handlers.Login).Methods("POST")
@@ -48,6 +57,7 @@ func SetupRoutes() *mux.Router {
 	api.HandleFunc("/especialidades", handlers.ListarEspecialidades).Methods("GET")
 
 	api.Handle("/medicos", middleware.JWTMiddleware(http.HandlerFunc(handlers.ListarMedicos))).Methods("GET")
+	api.Handle("/medicos/{id}/especialidades/{especialidadId}", middleware.JWTMiddleware(http.HandlerFunc(handlers.EliminarMedicoEspecialidad))).Methods("DELETE")
 
 	return r
 }

@@ -16,6 +16,7 @@ import DoctorAppointmentsPage from './pages/doctor/DoctorAppointmentsPage';
 import MyAppointmentsPage from './pages/patient/MyAppointmentsPage';
 import AdminAssignEspecialidadesPage from './pages/admin/AdminAssignEspecialidadesPage';
 import AdminEspecialidadesPage from './pages/admin/AdminEspecialidadesPage';
+import AdminMedicosPage from './pages/admin/AdminMedicosPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
 function App() {
@@ -36,9 +37,12 @@ function App() {
               <Route path="*" element={<NotFoundPage />} /> {/* Ruta para 404 */}
               <Route path="/doctor-appointments" element={<DoctorAppointmentsPage />} />
               <Route path="/my-appointments" element={<MyAppointmentsPage />} />
+
               <Route path="/admin/asignar-especialidades" element={<AdminAssignEspecialidadesPage />} />
               <Route path="/admin/especialidades" element={<AdminEspecialidadesPage />} />
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/medicos" element={<AdminMedicosPage />} />
 
             </Routes>
           </main>

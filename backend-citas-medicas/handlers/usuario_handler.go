@@ -46,16 +46,23 @@ func Registro(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(usuario)
 }
 
-// handlers/usuario_handler.go
 func ListarMedicos(w http.ResponseWriter, r *http.Request) {
 	var medicos []models.Usuario
-	if err := config.DB.Where("rol = ?", "medico").Find(&medicos).Error; err != nil {
+
+	// Preload para cargar la relación many2many
+	if err := config.DB.
+		Preload("Especialidades").
+		Where("rol = ?", "medico").
+		Find(&medicos).Error; err != nil {
 		http.Error(w, "Error al obtener médicos", http.StatusInternalServerError)
 		return
 	}
+
+	// Limpia la contraseña
 	for i := range medicos {
 		medicos[i].Contrasena = ""
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(medicos)
 }

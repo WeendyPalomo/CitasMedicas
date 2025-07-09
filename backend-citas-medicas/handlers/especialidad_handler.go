@@ -58,7 +58,7 @@ func AsignarEspecialidad(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(relacion)
 }
 
-func QuitarEspecialidad(w http.ResponseWriter, r *http.Request) {
+func EliminarMedicoEspecialidad(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	medicoID, _ := strconv.Atoi(vars["id"])
 	especialidadID, _ := strconv.Atoi(vars["especialidadId"])
@@ -69,5 +69,14 @@ func QuitarEspecialidad(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func EliminarEspecialidad(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	if err := config.DB.Delete(&models.Especialidad{}, id).Error; err != nil {
+		http.Error(w, "No se pudo eliminar", http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusNoContent)
 }

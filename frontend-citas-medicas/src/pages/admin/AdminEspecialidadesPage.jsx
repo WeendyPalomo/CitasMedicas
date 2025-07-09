@@ -1,49 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import { doctorService } from '../../services/doctorService';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 const AdminEspecialidadesPage = () => {
-  const [especialidades, setEspecialidades] = useState([]);
-  const [newNombre, setNewNombre] = useState('');
   const { user } = useAuth();
+  const [especialidades, setEspecialidades] = useState([]);
+  const [nuevaEspecialidad, setNuevaEspecialidad] = useState('');
 
-  const fetchEspecialidades = async () => {
-    const data = await doctorService.getEspecialidades(user.token);
-    setEspecialidades(data);
+  const cargarEspecialidades = async () => {
+    try {
+      const data = await doctorService.getEspecialidades(user.token);
+      setEspecialidades(data);
+    } catch (err) {
+      console.error('Error al cargar especialidades:', err.message);
+    }
   };
 
-  const handleAdd = async () => {
-    if (newNombre.trim()) {
-      await doctorService.createEspecialidad({ nombre: newNombre }, user.token);
-      setNewNombre('');
-      fetchEspecialidades();
+  const eliminar = async (id) => {
+    if (!window.confirm('¿Deseas eliminar esta especialidad?')) return;
+    try {
+      await doctorService.deleteEspecialidad(id, user.token); // ✅ aquí se pasa el token
+      cargarEspecialidades();
+    } catch (err) {
+      console.error('Error al eliminar especialidad:', err.message);
+    }
+  };
+
+  const agregar = async (e) => {
+    e.preventDefault();
+    if (!nuevaEspecialidad.trim()) return;
+    try {
+      await doctorService.createEspecialidad({ nombre: nuevaEspecialidad }, user.token);
+      setNuevaEspecialidad('');
+      cargarEspecialidades();
+    } catch (err) {
+      console.error('Error al agregar especialidad:', err.message);
     }
   };
 
   useEffect(() => {
-    fetchEspecialidades();
-  }, []);
+    if (user?.token) {
+      cargarEspecialidades();
+    }
+  }, [user]);
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded mt-10">
-      <h2 className="text-2xl font-bold mb-4">Gestión de Especialidades</h2>
+    <div className="p-6 max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Gestionar Especialidades</h1>
 
-      <div className="flex gap-2 mb-4">
+      <form onSubmit={agregar} className="mb-4 flex gap-2">
         <input
           type="text"
-          value={newNombre}
-          onChange={(e) => setNewNombre(e.target.value)}
-          placeholder="Nombre de la especialidad"
-          className="border px-3 py-2 rounded w-full"
+          className="border p-2 flex-1"
+          value={nuevaEspecialidad}
+          onChange={(e) => setNuevaEspecialidad(e.target.value)}
+          placeholder="Nueva especialidad"
         />
-        <button onClick={handleAdd} className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
           Agregar
         </button>
-      </div>
+      </form>
 
-      <ul className="list-disc list-inside text-gray-700">
+      <ul className="divide-y divide-gray-200 bg-white rounded shadow">
         {especialidades.map((esp) => (
-          <li key={esp.id}>{esp.nombre}</li>
+          <li key={esp.id} className="flex items-center justify-between px-4 py-2">
+            <span>{esp.nombre}</span>
+            <button
+              onClick={() => eliminar(esp.id)}
+              className="text-red-600 hover:text-red-800"
+              title="Eliminar"
+            >
+              🗑️
+            </button>
+          </li>
         ))}
       </ul>
     </div>

@@ -1,3 +1,4 @@
+// file: src/pages/admin/AdminAssignEspecialidadesPage.jsx
 import React, { useEffect, useState } from 'react';
 import { doctorService } from '../../services/doctorService';
 import { useAuth } from '../../context/AuthContext';
@@ -26,12 +27,20 @@ const AdminAssignEspecialidadesPage = () => {
 
   const toggleEspecialidad = async (medicoId, espId, hasEspecialidad) => {
     if (hasEspecialidad) {
-      await doctorService.removeEspecialidadFromMedico(medicoId, espId, user.token);
-    } else {
-      await doctorService.assignEspecialidadToMedico(medicoId, espId, user.token);
-    }
-    fetchData(); // refrescar
+       // Si ya la tiene, hacemos unremove
+       await doctorService.removeEspecialidadFromMedico(medicoId, espId, user.token);
+     } else {
+      // VALIDACIÓN: si no la tiene, ok, si la tiene (duplicado), avisar y salir
+      const medico = medicos.find(m => m.id === medicoId);
+      if (medico.especialidades.some(e => e.id === espId)) {
+        alert('Esta especialidad ya está asignada a este médico.');
+        return;
+      }
+       await doctorService.assignEspecialidadToMedico(medicoId, espId, user.token);
+     }
+     fetchData(); // refrescar
   };
+
 
   return (
     <div className="max-w-5xl mx-auto p-6 mt-8 bg-white shadow rounded">

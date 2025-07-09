@@ -1,7 +1,8 @@
 // src/services/api.js
 const API_BASE_URL = 'http://localhost:8080/api/v1'; // URL de backend Go
-
+// api.js
 const handleResponse = async (response) => {
+  if (response.status === 204) return null;
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Algo salió mal');

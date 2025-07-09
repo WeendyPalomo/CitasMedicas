@@ -5,5 +5,4 @@ type MedicoEspecialidad struct {
 	ID             uint `gorm:"primaryKey"`
 	MedicoID       uint
 	EspecialidadID uint
-	// Add other fields as needed
 }

@@ -23,13 +23,38 @@ export const doctorService = {
   },
 
   assignEspecialidadToMedico: async (medicoId, especialidadId, token) => {
-    // Asumimos que el backend tiene un endpoint para asignar la relación
     return api.post(`/medicos/${medicoId}/especialidades`, { especialidad_id: especialidadId }, token);
   },
 
-  removeEspecialidadFromMedico: async (medicoId, especialidadId, token) => {
-    // Para eliminar la relación, asumimos método DELETE con query params o similar
-    return api.delete(`/medicos/${medicoId}/especialidades/${especialidadId}`, token);
-  },
+  getMedicosPorEspecialidad: async (especialidadId) => {
+  const response = await api.get(`/especialidades/${especialidadId}/medicos`);
+  return response.data;
+},
+
+deleteEspecialidad: async (id, token) => {
+  await api.delete(`/especialidades/${id}`, token);
+  return true; // Ya no espera respuesta JSON
+},
+
+getMedicosConEspecialidades: (token) =>
+  api.get('/medicos-con-especialidades', token),
+
+// doctorService.js
+removeEspecialidadFromMedico: async (medicoId, especialidadId, token) => {
+  // api.delete(path, token) añadirá el Bearer automáticamente
+  await api.delete(`/medicos/${medicoId}/especialidades/${especialidadId}`, token);
+  return true;
+},
+
+
+getAsignaciones: async (token) => {
+  const response = await api.get('/medicos-con-especialidades', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
 
 };

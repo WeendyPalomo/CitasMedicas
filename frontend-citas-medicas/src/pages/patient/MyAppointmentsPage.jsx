@@ -30,24 +30,27 @@ const MyAppointmentsPage = () => {
       {citas.length === 0 ? (
         <p>No tienes citas agendadas.</p>
       ) : (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2">Fecha</th>
-              <th className="border border-gray-300 p-2">Hora</th>
-              <th className="border border-gray-300 p-2">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {citas.map((cita) => (
-              <tr key={cita.id} className="text-center">
-                <td className="border border-gray-300 p-2">{new Date(cita.fecha).toLocaleDateString()}</td>
-                <td className="border border-gray-300 p-2">{new Date(cita.hora).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
-                <td className="border border-gray-300 p-2 capitalize">{cita.estado}</td>
-              </tr>
+      <table className="min-w-full bg-white">
+        <thead>
+          <tr>
+            {["Estado", "Fecha", "Hora", "Médico", "Especialidad"].map(h => (
+              <th key={h}>{h}</th>
             ))}
-          </tbody>
-        </table>
+          </tr>
+        </thead>
+        <tbody>
+          {citas.map(cita => (
+            <tr key={cita.id}>
+              <td>{cita.estado}</td>
+              <td>{cita.fecha}</td>
+              <td>{cita.hora}</td>
+              <td>{cita.medico_nombre}</td>
+              <td>{cita.especialidad_nombre}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       )}
     </div>
   );
