@@ -13,6 +13,8 @@ func SetupRoutes() *mux.Router {
 	api := r.PathPrefix("/api/v1").Subrouter()
 
 	r.HandleFunc("/api/v1/citas", handlers.CrearCita).Methods("POST")
+	r.HandleFunc("/api/v1/citas/{id}", handlers.EliminarCita).Methods("DELETE")
+
 	r.HandleFunc("/api/v1/pacientes/{id}/citas", handlers.CitasPaciente).Methods("GET")
 	r.HandleFunc("/api/v1/citas/paciente/{id}", handlers.CitasPaciente).Methods("GET")
 

@@ -25,4 +25,10 @@ export const appointmentService = {
     return res; // Devuelve un array de horas ocupadas, ej: ["09:00", "10:00"]
   },
 
+  deleteAppointment: async (id, token) => {
+    const res = await api.delete(`/citas/${id}`, token);
+    return res;
+},
+
+
 };

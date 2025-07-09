@@ -75,6 +75,22 @@ func CitasPaciente(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(citas)
 }
 
+func EliminarCita(w http.ResponseWriter, r *http.Request) {
+	idStr := mux.Vars(r)["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "ID inválido", http.StatusBadRequest)
+		return
+	}
+
+	if err := config.DB.Delete(&models.Cita{}, id).Error; err != nil {
+		http.Error(w, "Error al eliminar cita", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func CitasMedico(w http.ResponseWriter, r *http.Request) {
 	idStr := mux.Vars(r)["id"]
 	id, _ := strconv.Atoi(idStr)
