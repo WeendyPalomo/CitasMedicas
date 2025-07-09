@@ -57,13 +57,6 @@ const PatientDashboard = () => {
         </div>
       </div>
 
-      <div className="mt-10">
-        <h2 className="text-3xl font-bold text-gray-900 mb-5 text-center">Próximas Citas</h2>
-        {/* Aquí iría la lógica para mostrar las próximas citas del paciente */}
-        <div className="bg-gray-100 p-6 rounded-lg text-center text-gray-600">
-          <p>No tienes citas próximas agendadas. ¡Agenda una ahora!</p>
-        </div>
-      </div>
     </div>
   );
 };

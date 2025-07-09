@@ -184,3 +184,22 @@ func GetMedicosConEspecialidades(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(resultados)
 }
+
+func ObtenerCitasPorMedicoYFecha(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	medicoID, _ := strconv.Atoi(vars["id"])
+	fecha := vars["fecha"]
+
+	var citas []models.Cita
+	if err := config.DB.Where("medico_id = ? AND fecha = ?", medicoID, fecha).Find(&citas).Error; err != nil {
+		http.Error(w, "Error al obtener citas", http.StatusInternalServerError)
+		return
+	}
+
+	horas := []string{}
+	for _, c := range citas {
+		horas = append(horas, c.Hora)
+	}
+
+	json.NewEncoder(w).Encode(horas)
+}

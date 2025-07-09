@@ -7,6 +7,8 @@ import (
 
 	"backend-citas-medicas/config"
 	"backend-citas-medicas/models"
+
+	"github.com/gorilla/mux"
 )
 
 func Registro(w http.ResponseWriter, r *http.Request) {
@@ -74,4 +76,37 @@ func ListarMedicosConEspecialidades(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(medicos)
+}
+
+func ListarMedicosPorEspecialidad(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	espID := vars["id"]
+	var medicos []models.Usuario
+
+	err := config.DB.
+		Joins("JOIN medico_especialidads ON medico_especialidads.medico_id = usuarios.id").
+		Where("medico_especialidads.especialidad_id = ? AND usuarios.rol = ?", espID, "medico").
+		Preload("Especialidades").
+		Find(&medicos).Error
+
+	if err != nil {
+		http.Error(w, "Error al obtener médicos por especialidad", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(medicos)
+
+}
+
+func ObtenerDisponibilidadDeMedico(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	var disponibilidad []models.Disponibilidad
+	if err := config.DB.Where("medico_id = ?", id).Find(&disponibilidad).Error; err != nil {
+		http.Error(w, "Error al obtener disponibilidad", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(disponibilidad)
 }

@@ -26,10 +26,10 @@ export const doctorService = {
     return api.post(`/medicos/${medicoId}/especialidades`, { especialidad_id: especialidadId }, token);
   },
 
-  getMedicosPorEspecialidad: async (especialidadId) => {
-  const response = await api.get(`/especialidades/${especialidadId}/medicos`);
-  return response.data;
-},
+  getMedicosPorEspecialidad: async (especialidadId, token) => {
+    const res = await api.get(`/especialidades/${especialidadId}/medicos`,token)
+    return res;
+  },
 
 deleteEspecialidad: async (id, token) => {
   await api.delete(`/especialidades/${id}`, token);
@@ -54,7 +54,13 @@ getAsignaciones: async (token) => {
     },
   });
   return response.data;
-}
+},
+
+getDisponibilidadPorMedico: async (medicoId, token) => {
+  const res = await api.get(`/medicos/${medicoId}/disponibilidad`, token);
+  return res;
+},
+
 
 
 };

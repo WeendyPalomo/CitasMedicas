@@ -14,4 +14,15 @@ export const appointmentService = {
   getAppointmentsByMedico: async (medicoId, token) => {
     return api.get(`/medicos/${medicoId}/citas`, token);
   },
+
+  getCitasPorMedicoYFecha: async (medicoId, fecha, token) => {
+    const res = await api.get(`/citas/medico/${medicoId}/fecha/${fecha}`, token);
+    return res;
+  },
+
+  getHorasOcupadas: async (medicoId, fecha, token) => {
+    const res = await api.get(`/medicos/${medicoId}/citas/${fecha}`, token);
+    return res; // Devuelve un array de horas ocupadas, ej: ["09:00", "10:00"]
+  },
+
 };
