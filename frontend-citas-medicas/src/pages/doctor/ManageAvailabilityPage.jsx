@@ -1,108 +1,159 @@
 // file: src/pages/doctor/ManageAvailabilityPage.jsx
 import React, { useEffect, useState } from 'react';
-import { api } from '../../services/api';
+import { doctorService } from '../../services/doctorService';
 import { useAuth } from '../../hooks/useAuth';
 
 const ManageAvailabilityPage = () => {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [disponibilidades, setDisponibilidades] = useState([]);
-  const [dia, setDia] = useState('');
-  const [inicio, setInicio] = useState('');
-  const [fin, setFin] = useState('');
-  const [mensaje, setMensaje] = useState(''); // Nuevo estado para mensajes
+  const [dia, setDia] = useState('lunes');
+  const [horaInicio, setHoraInicio] = useState('');
+  const [horaFin, setHoraFin] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [error, setError] = useState('');
 
-  const fetchDisponibilidades = async () => {
+  const token = user.token;
+
+  const cargarDisponibilidades = async () => {
     try {
-      const data = await api.get(`/medicos/${user.id}/disponibilidades`, token);
-      setDisponibilidades(data);
+      const data = await doctorService.getDisponibilidadPorMedico(user.id, token);
+      setDisponibilidades(data || []);
     } catch (error) {
-      console.error(error.message);
+      console.error('Error al obtener disponibilidades:', error);
     }
   };
 
   useEffect(() => {
-    fetchDisponibilidades();
+    if (token && user.id) cargarDisponibilidades();
   }, [token, user.id]);
 
- const handleSubmit = async (e) => {
+  const agregarDisponibilidad = async (e) => {
   e.preventDefault();
 
-  if (!dia || !inicio || !fin) {
-    setMensaje("Por favor completa día, hora de inicio y hora de fin.");
-    return;
-  }
+    // Validar que horaFin sea mayor que horaInicio
+    const [hInicio, mInicio] = horaInicio.split(':').map(Number);
+    const [hFin, mFin] = horaFin.split(':').map(Number);
+    const minutosInicio = hInicio * 60 + mInicio;
+    const minutosFin = hFin * 60 + mFin;
 
-  // Validar que hora_fin sea mayor que hora_inicio
-  const [inicioHora, inicioMinuto] = inicio.split(':').map(Number);
-  const [finHora, finMinuto] = fin.split(':').map(Number);
+    if (minutosFin <= minutosInicio) {
+      setError('Por favor verificar las horas, no se puede agregar la disponibilidad.');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
 
-  const inicioTotal = inicioHora * 60 + inicioMinuto;
-  const finTotal = finHora * 60 + finMinuto;
+    try {
+      await doctorService.createDisponibilidad(user.id, {
+        dia_semana: dia,
+        hora_inicio: horaInicio,
+        hora_fin: horaFin
+      }, token);
 
-  if (finTotal <= inicioTotal) {
-    setMensaje("La hora de fin debe ser mayor que la hora de inicio.");
-    setTimeout(() => setMensaje(''), 4000);
-    return;
-  }
+      setMensaje('Disponibilidad agregada');
+      setDia('lunes');
+      setHoraInicio('');
+      setHoraFin('');
+      cargarDisponibilidades();
+      setTimeout(() => setMensaje(''), 3000);
+    } catch (error) {
+      console.error('Error al agregar disponibilidad:', error);
+      setMensaje('Error al agregar disponibilidad. Intente de nuevo.');
+      setTimeout(() => setMensaje(''), 3000);
+    }
+  };
 
-  try {
-    const availabilityData = {
-      dia_semana: dia.toLowerCase(),
-      hora_inicio: inicio,
-      hora_fin: fin,
-    };
 
-    await api.post(`/medicos/${user.id}/disponibilidades`, availabilityData, user.token);
 
-    setMensaje("Disponibilidad guardada con éxito.");
-    setTimeout(() => setMensaje(''), 4000);
-
-    setDia('');
-    setInicio('');
-    setFin('');
-    fetchDisponibilidades();
-  } catch (error) {
-    const msg =
-      error?.response?.data?.error ||
-      "Error al guardar disponibilidad: " + error.message;
-    setMensaje(msg);
-    setTimeout(() => setMensaje(''), 4000);
-    console.error("Error al guardar:", error);
-  }
-};
+  const eliminarDisponibilidad = async (id) => {
+    try {
+      await doctorService.deleteDisponibilidad(id, token);
+      setMensaje('Disponibilidad eliminada');
+      cargarDisponibilidades();
+      setTimeout(() => setMensaje(''), 3000);
+    } catch (error) {
+      console.error('Error al eliminar disponibilidad:', error);
+    }
+  };
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Gestionar Disponibilidad</h1>
+    <div className="p-6 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Gestionar Disponibilidad</h1>
 
       {mensaje && (
-        <div className="mb-4 p-3 bg-blue-100 border border-blue-300 text-blue-800 rounded">
+        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
           {mensaje}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <select value={dia} onChange={(e) => setDia(e.target.value)} className="border p-2">
-          <option value="">Día de la semana</option>
-          {['lunes','martes','miércoles','jueves','viernes','sábado','domingo'].map((d) => (
-            <option key={d} value={d}>{d}</option>
-          ))}
-        </select>
+      {error && <p className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</p>}
 
-        <input type="time" value={inicio} onChange={(e) => setInicio(e.target.value)} className="border p-2" required />
-        <input type="time" value={fin} onChange={(e) => setFin(e.target.value)} className="border p-2" required />
-
-        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Guardar</button>
+      <form onSubmit={agregarDisponibilidad} className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div>
+          <label className="block font-medium mb-1">Día</label>
+          <select
+            value={dia}
+            onChange={(e) => setDia(e.target.value)}
+            className="border p-2 w-full rounded"
+          >
+            {['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'].map(d => (
+              <option key={d} value={d}>{d}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block font-medium mb-1">Hora inicio</label>
+          <input
+            type="time"
+            value={horaInicio}
+            onChange={(e) => setHoraInicio(e.target.value)}
+            className="border p-2 w-full rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block font-medium mb-1">Hora fin</label>
+          <input
+            type="time"
+            value={horaFin}
+            onChange={(e) => setHoraFin(e.target.value)}
+            className="border p-2 w-full rounded"
+            required
+          />
+        </div>
+        <div>
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded w-full">
+            Agregar
+          </button>
+        </div>
       </form>
 
-      <h2 className="text-lg font-semibold mt-6">Disponibilidades existentes:</h2>
-      <ul className="mt-2">
-        {disponibilidades.map((disp) => (
-          <li key={disp.id}>
-            {disp.dia_semana}: {disp.hora_inicio} - {disp.hora_fin}
-          </li>
-        ))}
-      </ul>
+      <table className="min-w-full bg-white shadow-md rounded">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="text-left p-3">Día</th>
+            <th className="text-left p-3">Hora Inicio</th>
+            <th className="text-left p-3">Hora Fin</th>
+            <th className="text-left p-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {disponibilidades.map(d => (
+            <tr key={d.id} className="border-t hover:bg-gray-50">
+              <td className="p-3 capitalize">{d.dia_semana}</td>
+              <td className="p-3">{d.hora_inicio}</td>
+              <td className="p-3">{d.hora_fin}</td>
+              <td className="p-3">
+                <button
+                  onClick={() => eliminarDisponibilidad(d.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -57,3 +57,15 @@ func CrearDisponibilidad(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(disponibilidad)
 }
+
+func EliminarDisponibilidad(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	if err := config.DB.Delete(&models.Disponibilidad{}, id).Error; err != nil {
+		http.Error(w, "Error al eliminar disponibilidad", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}

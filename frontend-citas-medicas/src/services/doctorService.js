@@ -13,6 +13,11 @@ export const doctorService = {
   createDisponibilidad: async (medicoId, data, token) => {
     return api.post(`/medicos/${medicoId}/disponibilidades`, data, token);
   },
+
+  deleteDisponibilidad: async (disponibilidadId, token) => {
+    return api.delete(`/disponibilidades/${disponibilidadId}`, token);
+  },
+  
     // Nuevas funciones para especialidades
   getEspecialidades: async (token) => {
     return api.get('/especialidades', token);

@@ -24,6 +24,7 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/api/v1/medicos/{id}/disponibilidad", handlers.ObtenerDisponibilidadDeMedico).Methods("GET")
 	r.HandleFunc("/api/v1/medicos/{id}/citas/{fecha}", handlers.ObtenerCitasPorMedicoYFecha).Methods("GET")
 	r.HandleFunc("/api/v1/medicos/{id}/disponibilidades", handlers.CrearDisponibilidad).Methods("POST")
+	r.HandleFunc("/api/v1/disponibilidades/{id}", handlers.EliminarDisponibilidad).Methods("DELETE")
 
 	r.HandleFunc("/api/v1/medicos/{id}/citas", handlers.ObtenerCitasPorMedico).Methods("GET")
 
