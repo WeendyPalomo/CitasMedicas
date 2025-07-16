@@ -3,6 +3,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -112,16 +113,19 @@ func ObtenerCitasPorMedico(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Traer citas con nombre del paciente
 	rows, err := config.DB.Raw(`
-		SELECT c.id, u.nombre AS paciente_nombre, c.fecha, c.hora
+		SELECT 
+			c.id, c.fecha, c.hora, c.estado,
+			p.id AS paciente_id, p.nombre AS paciente_nombre,
+			e.id AS especialidad_id, e.nombre AS especialidad_nombre
 		FROM cita c
-		JOIN usuarios u ON c.paciente_id = u.id
+		JOIN usuarios p ON p.id = c.paciente_id
+		JOIN especialidads e ON e.id = c.especialidad_id
 		WHERE c.medico_id = ?
 		ORDER BY c.fecha, c.hora
 	`, medicoID).Rows()
 	if err != nil {
-		http.Error(w, "Error al obtener citas", http.StatusInternalServerError)
+		http.Error(w, "Error al obtener citas del médico", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -129,38 +133,39 @@ func ObtenerCitasPorMedico(w http.ResponseWriter, r *http.Request) {
 	var citas []map[string]interface{}
 	for rows.Next() {
 		var id int
-		var pacienteNombre, fecha, hora string
-		if err := rows.Scan(&id, &pacienteNombre, &fecha, &hora); err != nil {
+		var fecha, hora, estado string
+		var pacienteID int
+		var pacienteNombre string
+		var especialidadID int
+		var especialidadNombre string
+
+		err = rows.Scan(&id, &fecha, &hora, &estado, &pacienteID, &pacienteNombre, &especialidadID, &especialidadNombre)
+		if err != nil {
+			log.Println("❌ Error al escanear fila:", err)
 			continue
 		}
 
-		// Obtener especialidades del médico para cada cita
-		var especialidades []string
-		especialidadRows, err := config.DB.Raw(`
-			SELECT e.nombre
-			FROM medicos_especialidades me
-			JOIN especialidad e ON me.especialidad_id = e.id
-			WHERE me.medico_id = ?
-		`, medicoID).Rows()
-		if err == nil {
-			for especialidadRows.Next() {
-				var nombre string
-				especialidadRows.Scan(&nombre)
-				especialidades = append(especialidades, nombre)
-			}
-			especialidadRows.Close()
-		}
+		log.Printf("✅ Cita ID: %d, Paciente: %s, Especialidad: %s", id, pacienteNombre, especialidadNombre)
 
 		cita := map[string]interface{}{
-			"id":              id,
-			"nombre_paciente": pacienteNombre,
-			"fecha":           fecha,
-			"hora":            hora,
-			"especialidades":  especialidades,
+			"id":     id,
+			"fecha":  fecha,
+			"hora":   hora,
+			"estado": estado,
+			"paciente": map[string]interface{}{
+				"id":     pacienteID,
+				"nombre": pacienteNombre,
+			},
+			"especialidad": map[string]interface{}{
+				"id":     especialidadID,
+				"nombre": especialidadNombre,
+			},
 		}
+
 		citas = append(citas, cita)
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(citas)
 }
 

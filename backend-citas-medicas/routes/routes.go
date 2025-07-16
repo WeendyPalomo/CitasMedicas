@@ -27,8 +27,6 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/api/v1/medicos/{id}/disponibilidades", handlers.CrearDisponibilidad).Methods("POST")
 	r.HandleFunc("/api/v1/disponibilidades/{id}", handlers.EliminarDisponibilidad).Methods("DELETE")
 
-	// r.HandleFunc("/api/v1/medicos/{id}/citas", handlers.ObtenerCitasPorMedico).Methods("GET")
-
 	r.HandleFunc("/api/v1/medicos/{id}/citas", handlers.ObtenerCitasPorMedicoAgenda).Methods("GET")
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("API de Citas Médicas activa")) })
@@ -54,6 +52,8 @@ func SetupRoutes() *mux.Router {
 	// Ruta para asignar especialidad a un médico
 	r.HandleFunc("/api/v1/medicos/{id}/especialidades", handlers.AsignarEspecialidad).Methods("POST")
 	r.HandleFunc("/api/v1/medicos/{id}/especialidades/{id}", handlers.EliminarMedicoEspecialidad).Methods("DELETE")
+
+	api.HandleFunc("/medicos/{id}/citas", handlers.ObtenerCitasPorMedico).Methods("GET")
 
 	// Rutas públicas
 	api.HandleFunc("/login", handlers.Login).Methods("POST")

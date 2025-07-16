@@ -17,15 +17,23 @@ const DoctorAppointmentsPage = () => {
   const [message, setMessage] = useState('');
 
   const fetchAppointments = async () => {
-    try {
-      const data = await api.get(`/medicos/${user.id}/citas`, user.token);
-      setAppointments(data.filter(cita => cita.estado !== 'finalizado'));
-    } catch (err) {
-      console.error('Error al cargar las citas del médico:', err);
-    }
-  };
+  try {
+    const data = await api.get(`/medicos/${user.id}/citas`, user.token);
+    console.log('📦 Respuesta API citas:', data);
+
+    const pendientes = data.filter(cita => cita.estado !== 'finalizado');
+    console.log('🟡 Filtradas (pendientes):', pendientes);
+
+    setAppointments(pendientes);
+  } catch (err) {
+    console.error('Error al cargar las citas del médico:', err);
+  }
+};
+
+
 
   useEffect(() => {
+    console.log("🟢 Appointments después de cargar:", appointments);
     if (user?.id && user?.token) {
       fetchAppointments();
     }
@@ -54,7 +62,7 @@ const DoctorAppointmentsPage = () => {
       setError('Diagnóstico y tratamiento son requeridos.');
       return;
     }
-    
+
       console.log({
         cita_id: selectedCita.id,
         diagnostico: form.diagnostico,
@@ -107,10 +115,10 @@ const DoctorAppointmentsPage = () => {
             <tbody>
             {appointments.map((cita) => (
               <tr key={cita.id} className="border-t">
-                <td className="px-4 py-2">{cita.paciente?.nombre}</td>
-                <td className="px-4 py-2">{cita.fecha}</td>
-                <td className="px-4 py-2">{cita.hora}</td>
-                <td className="px-4 py-2">{cita.especialidad?.nombre}</td>
+              <td className="px-4 py-2">{cita.paciente?.nombre || 'Sin nombre'}</td>
+              <td className="px-4 py-2">{cita.fecha}</td>
+              <td className="px-4 py-2">{cita.hora}</td>
+              <td className="px-4 py-2">{cita.especialidad?.nombre || 'Sin especialidad'}</td>
                 <td className="px-4 py-2">
                   <button
                     onClick={() => handleOpenModal(cita)}

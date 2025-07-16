@@ -10,8 +10,11 @@ type Cita struct {
 	Hora           string `json:"hora"`
 	Estado         string `gorm:"type:varchar(20);default:'pendiente'" json:"estado"`
 
-	Paciente     Usuario      `gorm:"foreignKey:PacienteID" json:"paciente"`         // <- CAMBIO: quitar "-"
-	Medico       Usuario      `gorm:"foreignKey:MedicoID" json:"medico"`             // opcional
-	Historial    *Historial   `gorm:"foreignKey:CitaID" json:"historial,omitempty"`  // opcional
-	Especialidad Especialidad `gorm:"foreignKey:EspecialidadID" json:"especialidad"` // <- CAMBIO: quitar "-"
+	Paciente     Usuario      `gorm:"foreignKey:PacienteID;references:ID" json:"paciente"`
+	Medico       Usuario      `gorm:"foreignKey:MedicoID;references:ID" json:"medico"`
+	Especialidad Especialidad `gorm:"foreignKey:EspecialidadID;references:ID" json:"especialidad"`
+}
+
+func (Cita) TableName() string {
+	return "cita"
 }

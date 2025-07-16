@@ -13,3 +13,8 @@ type Usuario struct {
 
 	Especialidades []Especialidad `gorm:"many2many:medico_especialidads;joinForeignKey:MedicoID;joinReferences:EspecialidadID" json:"especialidades,omitempty"`
 }
+
+// Agrega este método si no lo tienes ya:
+func (Usuario) TableName() string {
+	return "usuarios"
+}

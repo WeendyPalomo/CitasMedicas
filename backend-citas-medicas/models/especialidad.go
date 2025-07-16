@@ -7,3 +7,7 @@ type Especialidad struct {
 
 	Medicos []Usuario `gorm:"many2many:medico_especialidads;" json:"medicos,omitempty"`
 }
+
+func (Especialidad) TableName() string {
+	return "especialidads"
+}
