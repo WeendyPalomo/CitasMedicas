@@ -33,18 +33,18 @@ setShowModal(true);
 
 const cancelarCita = async () => {
 if (!citaSeleccionada) return;
-try {
-  await appointmentService.deleteAppointment(citaSeleccionada.id, token);
-  setCitas(prev => prev.filter(c => c.id !== citaSeleccionada.id));
-  setMensaje('Cita cancelada correctamente.');
-  setTimeout(() => setMensaje(''), 4000);
-} catch (err) {
-  console.error('❌ Error al cancelar cita:', err);
-  setError('No se pudo cancelar la cita.');
-} finally {
-  setShowModal(false);
-  setCitaSeleccionada(null);
-}
+  try {
+    await appointmentService.deleteAppointment(citaSeleccionada.id, token);
+    setCitas(prev => prev.filter(c => c.id !== citaSeleccionada.id));
+    setMensaje('Cita cancelada correctamente.');
+    setTimeout(() => setMensaje(''), 4000);
+  } catch (err) {
+    console.error('❌ Error al cancelar cita:', err);
+    setError('No se pudo cancelar la cita.');
+  } finally {
+    setShowModal(false);
+    setCitaSeleccionada(null);
+  }
 };
 
 return (

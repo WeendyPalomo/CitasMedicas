@@ -17,6 +17,7 @@ func SetupRoutes() *mux.Router {
 
 	r.HandleFunc("/api/v1/pacientes/{id}/citas", handlers.CitasPaciente).Methods("GET")
 	r.HandleFunc("/api/v1/citas/paciente/{id}", handlers.CitasPaciente).Methods("GET")
+	r.HandleFunc("/api/v1/citas/{id}/estado", handlers.CambiarEstadoCita).Methods("PUT")
 
 	r.HandleFunc("/api/v1/medicos/{id}/citas", handlers.CitasMedico).Methods("GET")
 
@@ -26,14 +27,20 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/api/v1/medicos/{id}/disponibilidades", handlers.CrearDisponibilidad).Methods("POST")
 	r.HandleFunc("/api/v1/disponibilidades/{id}", handlers.EliminarDisponibilidad).Methods("DELETE")
 
-	r.HandleFunc("/api/v1/medicos/{id}/citas", handlers.ObtenerCitasPorMedico).Methods("GET")
+	// r.HandleFunc("/api/v1/medicos/{id}/citas", handlers.ObtenerCitasPorMedico).Methods("GET")
+
+	r.HandleFunc("/api/v1/medicos/{id}/citas", handlers.ObtenerCitasPorMedicoAgenda).Methods("GET")
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("API de Citas Médicas activa")) })
 
 	r.HandleFunc("/especialidades", handlers.ListarEspecialidades).Methods("GET")
 	r.HandleFunc("/especialidades", handlers.CrearEspecialidad).Methods("POST")
 
+	r.HandleFunc("/api/v1/historiales", handlers.CrearHistorial).Methods("POST")
+
 	r.HandleFunc("/medicos/{id}/especialidades", handlers.AsignarEspecialidad).Methods("POST")
+
+	r.HandleFunc("/api/v1/historial", handlers.CrearHistorial).Methods("POST")
 
 	r.HandleFunc("/api/v1/especialidades/{id}/medicos", handlers.ObtenerMedicosPorEspecialidad).Methods("GET")
 	r.Handle("/api/v1/especialidades/{id}", middleware.JWTMiddleware(http.HandlerFunc(handlers.EliminarEspecialidad))).Methods("DELETE")

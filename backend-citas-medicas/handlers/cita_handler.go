@@ -218,3 +218,43 @@ func ObtenerCitasPorMedicoYFecha(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(horas)
 }
+
+func ObtenerCitasPorMedicoAgenda(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	var citas []models.Cita
+	err := config.DB.
+		Preload("Paciente").
+		Preload("Especialidad").
+		Where("medico_id = ?", id).
+		Where("estado = ?", "pendiente").
+		Find(&citas).Error
+
+	if err != nil {
+		http.Error(w, "Error al obtener citas del médico", http.StatusInternalServerError)
+		return
+	}
+
+	var resultado []map[string]interface{}
+	for _, c := range citas {
+		citaMap := map[string]interface{}{
+			"id":     c.ID,
+			"fecha":  c.Fecha,
+			"hora":   c.Hora,
+			"estado": c.Estado,
+			"paciente": map[string]interface{}{
+				"id":     c.Paciente.ID,
+				"nombre": c.Paciente.Nombre,
+			},
+			"especialidad": map[string]interface{}{
+				"id":     c.Especialidad.ID,
+				"nombre": c.Especialidad.Nombre,
+			},
+		}
+		resultado = append(resultado, citaMap)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resultado)
+}
