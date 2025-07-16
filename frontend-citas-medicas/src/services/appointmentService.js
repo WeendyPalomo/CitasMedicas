@@ -7,7 +7,6 @@ export const appointmentService = {
   },
 
   getAppointmentsByPaciente: async (pacienteId, token) => {
-    // Aquí ajustamos la ruta para que coincida con la que tienes en backend:
     return api.get(`/citas/paciente/${pacienteId}`, token);
   },
 
@@ -22,7 +21,7 @@ export const appointmentService = {
 
   getHorasOcupadas: async (medicoId, fecha, token) => {
     const res = await api.get(`/medicos/${medicoId}/citas/${fecha}`, token);
-    return res; // Devuelve un array de horas ocupadas, ej: ["09:00", "10:00"]
+    return res; // array de horas ocupadas - disponibilidad medicos
   },
 
   deleteAppointment: async (id, token) => {

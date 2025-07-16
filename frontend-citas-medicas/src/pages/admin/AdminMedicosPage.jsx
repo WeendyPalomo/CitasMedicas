@@ -16,7 +16,7 @@ const AdminMedicosPage = () => {
 
   useEffect(() => {
     if (!user?.token) return;
-    // 1) Traemos médicos y eliminamos duplicados en cada lista de especialidades
+    // médicos: eliminamos duplicados en cada lista de especialidades
    doctorService.getMedicos(user.token)
      .then(rawMedicos => {
        const deduped = rawMedicos.map(m => {
@@ -40,7 +40,7 @@ const AdminMedicosPage = () => {
 
   const toggleEsp = (id) => {
     setMedicoEspSelec(prev =>
-      // 2) Previene que el mismo id aparezca dos veces en el state
+      // medicos: previene que el mismo id aparezca dos veces en el state
       prev.includes(id) ? prev.filter(x => x !== id) : Array.from(new Set([...prev, id]))
     );
   };

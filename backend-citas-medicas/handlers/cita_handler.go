@@ -84,7 +84,7 @@ func CancelarCita(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Actualizar el estado de la cita a "cancelado"
+	// Actualizar el estado de la cita a cancelado
 	if err := config.DB.Model(&models.Cita{}).Where("id = ?", id).Update("estado", "cancelado").Error; err != nil {
 		http.Error(w, "Error al cancelar cita", http.StatusInternalServerError)
 		return

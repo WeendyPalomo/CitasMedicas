@@ -23,7 +23,7 @@ import AdminReportesPage from './pages/admin/AdminReportesPage';
 function App() {
   return (
     <Router>
-      <AuthProvider> {/* Envuelve toda la aplicación con el AuthProvider */}
+      <AuthProvider> 
         <div className="flex flex-col min-h-screen font-inter">
           <Navbar />
           <main className="flex-grow container mx-auto p-4 md:p-8">

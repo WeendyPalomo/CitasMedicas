@@ -51,7 +51,7 @@ func Registro(w http.ResponseWriter, r *http.Request) {
 func ListarMedicos(w http.ResponseWriter, r *http.Request) {
 	var medicos []models.Usuario
 
-	// Preload para cargar la relación many2many
+	// cargar la relación mucho a muchos
 	if err := config.DB.
 		Preload("Especialidades").
 		Where("rol = ?", "medico").
@@ -60,7 +60,7 @@ func ListarMedicos(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Limpia la contraseña
+	// limpia la contraseña
 	for i := range medicos {
 		medicos[i].Contrasena = ""
 	}

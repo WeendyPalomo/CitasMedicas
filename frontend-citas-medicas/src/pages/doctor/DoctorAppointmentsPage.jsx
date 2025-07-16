@@ -19,10 +19,10 @@ const DoctorAppointmentsPage = () => {
   const fetchAppointments = async () => {
   try {
     const data = await api.get(`/medicos/${user.id}/citas`, user.token);
-    console.log('📦 Respuesta API citas:', data);
+    console.log('Respuesta API citas:', data);
 
     const pendientes = data.filter(cita => cita.estado === 'pendiente');
-    console.log('🟡 Filtradas (pendientes):', pendientes);
+    console.log('Pendientes: ', pendientes);
 
     setAppointments(pendientes);
   } catch (err) {
@@ -33,7 +33,7 @@ const DoctorAppointmentsPage = () => {
 
 
   useEffect(() => {
-    console.log("🟢 Appointments después de cargar:", appointments);
+    console.log("Appointments: despues de cargar ", appointments);
     if (user?.id && user?.token) {
       fetchAppointments();
     }

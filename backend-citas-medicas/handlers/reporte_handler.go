@@ -18,7 +18,7 @@ func ObtenerDatosReporte(w http.ResponseWriter, r *http.Request) {
 
 	var data DashboardData
 
-	// Conteo de usuarios por rol
+	// usuarios por rol
 	rows, err := config.DB.Raw(`SELECT rol, COUNT(*) FROM usuarios GROUP BY rol`).Rows()
 	if err != nil {
 		http.Error(w, "Error al obtener usuarios", http.StatusInternalServerError)
@@ -32,7 +32,7 @@ func ObtenerDatosReporte(w http.ResponseWriter, r *http.Request) {
 		data.UsuariosPorRol[rol] = total
 	}
 
-	// Conteo de citas por estado
+	// citas por estado
 	rows2, err := config.DB.Raw(`SELECT estado, COUNT(*) FROM cita GROUP BY estado`).Rows()
 	if err != nil {
 		http.Error(w, "Error al obtener citas por estado", http.StatusInternalServerError)
@@ -46,7 +46,7 @@ func ObtenerDatosReporte(w http.ResponseWriter, r *http.Request) {
 		data.CitasPorEstado[estado] = total
 	}
 
-	// Especialidades más solicitadas
+	// Especialidades mas solicitadas
 	rows3, err := config.DB.Raw(`
 		SELECT e.nombre, COUNT(*) as total
 		FROM cita c

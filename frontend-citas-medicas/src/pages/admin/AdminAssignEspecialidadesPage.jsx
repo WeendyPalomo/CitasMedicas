@@ -27,10 +27,9 @@ const AdminAssignEspecialidadesPage = () => {
 
   const toggleEspecialidad = async (medicoId, espId, hasEspecialidad) => {
     if (hasEspecialidad) {
-       // Si ya la tiene, hacemos unremove
        await doctorService.removeEspecialidadFromMedico(medicoId, espId, user.token);
      } else {
-      // VALIDACIÓN: si no la tiene, ok, si la tiene (duplicado), avisar y salir
+      // validacion de especialidades por medico
       const medico = medicos.find(m => m.id === medicoId);
       if (medico.especialidades.some(e => e.id === espId)) {
         alert('Esta especialidad ya está asignada a este médico.');
@@ -38,7 +37,7 @@ const AdminAssignEspecialidadesPage = () => {
       }
        await doctorService.assignEspecialidadToMedico(medicoId, espId, user.token);
      }
-     fetchData(); // refrescar
+     fetchData(); 
   };
 
 

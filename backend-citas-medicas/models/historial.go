@@ -13,3 +13,7 @@ type Historial struct {
 
 	Cita Cita `gorm:"foreignKey:CitaID" json:"-"`
 }
+
+func (Historial) TableName() string {
+	return "historials"
+}

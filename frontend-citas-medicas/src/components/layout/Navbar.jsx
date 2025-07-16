@@ -1,7 +1,7 @@
 // src/components/layout/Navbar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth'; // Importa el hook de autenticación
+import { useAuth } from '../../hooks/useAuth'; // autenticación
 
 const Navbar = () => {
   const { user, logout } = useAuth(); // Obtiene el usuario y la función de logout del contexto

@@ -68,7 +68,6 @@ const DoctorDashboard = () => {
             >
             Ver Agenda
             </Link>
-            {/* Esta ruta aún no está definida en App.jsx, es un ejemplo */}
 
         </div>
       </div>

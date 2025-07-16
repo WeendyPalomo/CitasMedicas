@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtKey = []byte("mi_clave_secreta") // puedes usar os.Getenv si usas .env
+var jwtKey = []byte("mi_clave_secreta")
 
 // Middleware para verificar token JWT
 func JWTMiddleware(next http.Handler) http.Handler {
