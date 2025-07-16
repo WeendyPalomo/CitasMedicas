@@ -21,7 +21,7 @@ const DoctorAppointmentsPage = () => {
     const data = await api.get(`/medicos/${user.id}/citas`, user.token);
     console.log('📦 Respuesta API citas:', data);
 
-    const pendientes = data.filter(cita => cita.estado !== 'finalizado');
+    const pendientes = data.filter(cita => cita.estado === 'pendiente');
     console.log('🟡 Filtradas (pendientes):', pendientes);
 
     setAppointments(pendientes);

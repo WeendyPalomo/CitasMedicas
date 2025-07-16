@@ -28,7 +28,12 @@ export const appointmentService = {
   deleteAppointment: async (id, token) => {
     const res = await api.delete(`/citas/${id}`, token);
     return res;
-},
+  },
+
+  cancelAppointment: async (id, token) => {
+    return api.put(`/citas/${id}/cancelar`, {}, token);
+  },
+
 
 
 };

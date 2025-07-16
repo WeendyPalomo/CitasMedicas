@@ -13,7 +13,6 @@ func SetupRoutes() *mux.Router {
 	api := r.PathPrefix("/api/v1").Subrouter()
 
 	r.HandleFunc("/api/v1/citas", handlers.CrearCita).Methods("POST")
-	r.HandleFunc("/api/v1/citas/{id}", handlers.EliminarCita).Methods("DELETE")
 
 	r.HandleFunc("/api/v1/pacientes/{id}/citas", handlers.CitasPaciente).Methods("GET")
 	r.HandleFunc("/api/v1/citas/paciente/{id}", handlers.CitasPaciente).Methods("GET")
@@ -52,8 +51,10 @@ func SetupRoutes() *mux.Router {
 	// Ruta para asignar especialidad a un médico
 	r.HandleFunc("/api/v1/medicos/{id}/especialidades", handlers.AsignarEspecialidad).Methods("POST")
 	r.HandleFunc("/api/v1/medicos/{id}/especialidades/{id}", handlers.EliminarMedicoEspecialidad).Methods("DELETE")
+	r.HandleFunc("/api/v1/admin/reportes", handlers.ObtenerDatosReporte).Methods("GET")
 
 	api.HandleFunc("/medicos/{id}/citas", handlers.ObtenerCitasPorMedico).Methods("GET")
+	api.HandleFunc("/citas/{id}/cancelar", handlers.CancelarCita).Methods("PUT")
 
 	// Rutas públicas
 	api.HandleFunc("/login", handlers.Login).Methods("POST")

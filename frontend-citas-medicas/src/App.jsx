@@ -18,6 +18,7 @@ import AdminAssignEspecialidadesPage from './pages/admin/AdminAssignEspecialidad
 import AdminEspecialidadesPage from './pages/admin/AdminEspecialidadesPage';
 import AdminMedicosPage from './pages/admin/AdminMedicosPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminReportesPage from './pages/admin/AdminReportesPage';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route path="/admin/medicos" element={<AdminMedicosPage />} />
+              <Route path="/admin/reportes" element={<AdminReportesPage />} />
 
             </Routes>
           </main>

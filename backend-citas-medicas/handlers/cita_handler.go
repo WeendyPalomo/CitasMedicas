@@ -76,7 +76,7 @@ func CitasPaciente(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(citas)
 }
 
-func EliminarCita(w http.ResponseWriter, r *http.Request) {
+func CancelarCita(w http.ResponseWriter, r *http.Request) {
 	idStr := mux.Vars(r)["id"]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -84,8 +84,9 @@ func EliminarCita(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := config.DB.Delete(&models.Cita{}, id).Error; err != nil {
-		http.Error(w, "Error al eliminar cita", http.StatusInternalServerError)
+	// Actualizar el estado de la cita a "cancelado"
+	if err := config.DB.Model(&models.Cita{}).Where("id = ?", id).Update("estado", "cancelado").Error; err != nil {
+		http.Error(w, "Error al cancelar cita", http.StatusInternalServerError)
 		return
 	}
 
